@@ -1,34 +1,43 @@
-import { compose, createStore, applyMiddleware } from 'redux';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import logger from 'redux-logger';
+// import { compose, createStore, applyMiddleware } from 'redux';
+// above redux will be replaced by configureStore from redux toolkit (below)
+import { configureStore } from "@reduxjs/toolkit"
 
-import { rootReducer } from './root-reducer';
+// import { persistStore, persistReducer } from 'redux-persist';
+// import storage from 'redux-persist/lib/storage';
+import logger from "redux-logger"
 
-const middleWares = [process.env.NODE_ENV === 'development' && logger].filter(
-  Boolean
-);
+import { rootReducer } from "./root-reducer"
 
-const composeEnhancer =
-  (process.env.NODE_ENV !== 'production' &&
-    window &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
-  compose;
+const middleWares = [process.env.NODE_ENV === "development" && logger].filter(
+    Boolean
+)
 
-const persistConfig = {
-  key: 'root',
-  storage,
-  blacklist: ['user'],
-};
+// const composeEnhancer =
+//   (process.env.NODE_ENV !== 'production' &&
+//     window &&
+//     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+//   compose;
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+// const persistConfig = {
+//   key: 'root',
+//   storage,
+//   blacklist: ['user'],
+// };
 
-const composedEnhancers = composeEnhancer(applyMiddleware(...middleWares));
+// const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const store = createStore(
-  persistedReducer,
-  undefined,
-  composedEnhancers
-);
+// const composedEnhancers = composeEnhancer(applyMiddleware(...middleWares));
 
-export const persistor = persistStore(store);
+// export const store = createStore(
+//   persistedReducer,
+//   undefined,
+//   composedEnhancers
+// );
+// above createStore is replaced by configureStore, below
+export const store = configureStore({
+    reducer: rootReducer,
+    // by stating the middleware used, we will override the default middlewares that come with the toolkit (incl. thunk)
+    middleware: middleWares,
+})
+
+// export const persistor = persistStore(store);
