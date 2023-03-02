@@ -23,8 +23,12 @@ const App = () => {
             if (user) {
                 createUserDocumentFromAuth(user)
             }
-            console.log(setCurrentUser(user))
-            dispatch(setCurrentUser(user))
+            // pickedUser is used to breakdown the UserImpl class constructor that firebase uses. this is so that it doesnt activate the serializer check in redux toolkit.
+            const pickedUser =
+                user &&
+                (({ accessToken, email }) => ({ accessToken, email }(user)))
+            console.log(setCurrentUser(pickedUser))
+            dispatch(setCurrentUser(pickedUser))
         })
 
         return unsubscribe

@@ -37,7 +37,12 @@ const middleWares = [process.env.NODE_ENV === "development" && logger].filter(
 export const store = configureStore({
     reducer: rootReducer,
     // by stating the middleware used, we will override the default middlewares that come with the toolkit (incl. thunk)
-    middleware: middleWares,
+    // if you pass in a func getDefaultMiddleware with param getDefaultMiddleware, you can have the built-in middleware as well as your own.
+    // getDefaultMiddleware will return an array, so you can just concat more values to add your own middlewares.
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }).concat(middleWares),
 })
 
 // export const persistor = persistStore(store);
